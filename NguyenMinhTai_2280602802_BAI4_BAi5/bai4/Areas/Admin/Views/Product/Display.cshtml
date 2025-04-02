@@ -1,0 +1,27 @@
+﻿@model bai4.Models.Product
+
+<h2 class="mb-4 text-center text-primary">📦 Product Details</h2>
+
+<div class="card shadow-lg p-4">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" alt="Product Image" class="img-fluid rounded shadow" style="max-width: 100%;" />
+            }
+            else
+            {
+                <p class="text-muted">No Image Available</p>
+            }
+        </div>
+        <div class="col-md-8">
+            <h3 class="text-success fw-bold">@Model.Name</h3>
+            <h4 class="text-danger">💲 @Model.Price.ToString("N2")</h4>
+            <p class="text-muted">@Model.Description</p>
+
+            <a asp-action="Index" class="btn btn-secondary mt-3">
+                ⬅ Back to List
+            </a>
+        </div>
+    </div>
+</div>

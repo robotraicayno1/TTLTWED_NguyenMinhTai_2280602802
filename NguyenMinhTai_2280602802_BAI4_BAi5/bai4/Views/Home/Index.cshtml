@@ -1,0 +1,178 @@
+﻿@model IEnumerable<bai4.Models.Product>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #2c3e50, #34495e); /* Gradient tối sang trọng */
+        font-family: 'Poppins', sans-serif;
+        color: #ecf0f1;
+        margin: 0;
+        padding: 0;
+    }
+
+    .card {
+        background: rgba(0, 0, 0, 0.6); /* Nền card tối */
+        backdrop-filter: blur(12px); /* Mờ nền */
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+        .card:hover {
+            transform: scale(1.05); /* Phóng to khi hover */
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        }
+
+    .card-img-top {
+        height: 250px;
+        object-fit: cover;
+        filter: brightness(0.8); /* Tối hình ảnh */
+    }
+
+    .btn-dark {
+        transition: 0.3s;
+        background: linear-gradient(135deg, #e74c3c, #f39c12); /* Màu gradient rực rỡ */
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+    }
+
+        .btn-dark:hover {
+            background: linear-gradient(135deg, #f39c12, #e74c3c); /* Đảo ngược gradient khi hover */
+            transform: scale(1.1);
+        }
+
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1050;
+    }
+
+    .toast-body {
+        font-size: 1.1em;
+        font-weight: bold;
+    }
+
+    .card-title {
+        font-size: 1.2em;
+        font-weight: 600;
+        color: #ecf0f1;
+    }
+
+    .price {
+        color: #e74c3c;
+        font-size: 1.1em;
+        font-weight: bold;
+    }
+
+    .quantity-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .quantity-input {
+        width: 60px;
+        height: 38px;
+        text-align: center;
+        font-size: 1.1em;
+        margin-right: 10px;
+    }
+</style>
+
+<section class="py-4">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            @foreach (var item in Model)
+            {
+                <div class="col mb-5">
+                    <div class="card shadow-lg rounded-3 border-0" style="width: 18rem">
+                        <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 280px; object-fit: cover;">
+                        <div class="card-body text-center">
+                            <h5 class="card-title fw-bold">@item.Name</h5>
+
+                            <div class="d-flex justify-content-center align-items-center">
+                                <span class="fw-bold text-secondary">Giá:</span>
+                                <p class="mx-2 fw-bold text-danger">@item.Price.ToString("#,##0") VND</p>
+                            </div>
+
+                            <!-- Input số lượng & nút thêm giỏ hàng -->
+                            <div class="d-flex justify-content-center align-items-center mt-2">
+                                <input type="number" id="quantity-@item.Id" value="1" min="1" class="form-control text-center me-2 quantity-input">
+                                <button class="btn btn-dark" onclick="addToCart(@item.Id, this)">
+                                    <i class="bi bi-cart-plus me-1"></i> Thêm
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Toast Notification -->
+<div class="toast-container">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="loginToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    @TempData["SuccessMessage"]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+    <div id="cartToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Sản phẩm đã được thêm vào giỏ hàng!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function addToCart(productId, button) {
+        let quantity = document.getElementById(`quantity-${productId}`).value;
+        button.innerHTML = '<i class="bi bi-hourglass-split"></i> Đang thêm...';
+        button.disabled = true;
+
+        setTimeout(() => {
+            // Gọi API thêm sản phẩm vào giỏ hàng (ở đây chỉ giả lập)
+            fetch(`/ShoppingCart/AddToCart?productId=${productId}&quantity=${quantity}`)
+                .then(response => {
+                    if (response.ok) {
+                        showToast('cartToast');
+                    }
+                });
+
+            button.innerHTML = '<i class="bi bi-cart-plus"></i> Thêm';
+            button.disabled = false;
+        }, 1000);
+    }
+
+    function showToast(toastId) {
+        let toastEl = document.getElementById(toastId);
+        let toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    }
+
+    // Show login success toast if it exists
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <text>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        showToast('loginToast');
+                    });
+        </text>
+    }
+</script>

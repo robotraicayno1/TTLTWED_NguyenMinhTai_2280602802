@@ -1,0 +1,33 @@
+﻿@model IEnumerable<bai4.Models.Product>
+
+<h2 class="mb-3">Product List</h2>
+
+<a asp-action="Add" class="btn btn-primary mb-3">➕ Add New Product</a>
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Price ($)</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Price.ToString("N2")</td>
+                <td>@product.Description</td>
+                <td>@product.Category?.Name</td>
+                <td class="text-center">
+                    <a asp-action="Display" asp-route-id="@product.Id" class="btn btn-info btn-sm">👁️ View</a>
+                    <a asp-action="Update" asp-route-id="@product.Id" class="btn btn-warning btn-sm">✏️ Edit</a>
+                    <a asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">🗑️ Delete</a>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>

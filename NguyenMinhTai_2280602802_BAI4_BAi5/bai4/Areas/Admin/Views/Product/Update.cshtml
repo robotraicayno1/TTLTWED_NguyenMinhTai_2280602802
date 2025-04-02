@@ -1,0 +1,67 @@
+﻿@model bai4.Models.Product
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Edit Product";
+}
+
+<h2 class="mb-4 text-center">✏️ Edit Product</h2>
+
+<div class="card shadow p-4">
+    <form asp-action="Update" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label fw-bold">Product Name</label>
+            <input asp-for="Name" class="form-control" placeholder="Enter product name..." />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label fw-bold">Price ($)</label>
+            <input asp-for="Price" type="number" class="form-control" placeholder="Enter price..." />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label fw-bold">Description</label>
+            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter product description..."></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CategoryId" class="form-label fw-bold">Category</label>
+            <select asp-for="CategoryId" asp-items="@ViewBag.Categories" class="form-select">
+                <option value="">-- Select Category --</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ImageUrl" class="form-label fw-bold">Product Image</label>
+            <input type="file" asp-for="ImageUrl" class="form-control" accept="image/*" onchange="previewImage(event)" />
+            <div class="mt-2">
+                <img id="imagePreview" src="@Model.ImageUrl" alt="Current Image" class="img-thumbnail" style="max-width: 200px; display: block;" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">
+            🔄 Update Product
+        </button>
+    </form>
+</div>
+
+<!-- JavaScript: Hiển thị ảnh preview -->
+<script>
+    function previewImage(event) {
+        const preview = document.getElementById('imagePreview');
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+</script>

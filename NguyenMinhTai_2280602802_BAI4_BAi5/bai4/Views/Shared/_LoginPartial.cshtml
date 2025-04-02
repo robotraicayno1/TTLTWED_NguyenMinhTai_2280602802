@@ -1,0 +1,78 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+        </li>
+        <li class="nav-item">
+            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button id="logout" type="submit" class="nav-link btn btn-custom">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link btn btn-custom me-3" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link btn btn-custom" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
+</ul>
+
+<style>
+    /* Nút bấm kết hợp giữa đen và vàng gold */
+    .btn-custom {
+        background-color: #000000; /* Màu đen */
+        color: #FFD700; /* Màu vàng gold */
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        border: 2px solid #FFD700;
+        transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+        .btn-custom:hover {
+            background-color: #FFD700; /* Màu vàng gold khi hover */
+            color: #000000; /* Chuyển màu chữ về đen khi hover */
+            transform: scale(1.05); /* Phóng to nhẹ khi hover */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Thêm shadow khi hover */
+        }
+
+    /* Thêm khoảng cách giữa các nút */
+    .me-3 {
+        margin-right: 15px; /* Khoảng cách giữa các nút */
+    }
+
+    /* Thêm hiệu ứng hover cho các liên kết */
+    .nav-link {
+        transition: color 0.3s, background-color 0.3s;
+    }
+
+        .nav-link:hover {
+            color: #FFD700 !important; /* Vàng gold khi hover */
+        }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const logoutForm = document.getElementById("logoutForm");
+        if (logoutForm) {
+            logoutForm.addEventListener("submit", function (event) {
+                const confirmLogout = confirm("Bạn có chắc muốn đăng xuất không?");
+                if (!confirmLogout) {
+                    event.preventDefault(); // Ngừng hành động đăng xuất nếu người dùng chọn Hủy
+                }
+            });
+        }
+    });
+</script>
+

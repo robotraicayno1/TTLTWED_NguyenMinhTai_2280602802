@@ -1,0 +1,108 @@
+﻿@model bai4.Models.Order
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #2c3e50, #34495e); /* Tông màu tối */
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card {
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .card-body {
+        color: white;
+    }
+
+    .form-label {
+        color: #f39c12; /* Màu vàng gold cho nhãn */
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+    }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: none;
+        }
+
+    .btn-success {
+        background-color: #f39c12; /* Màu vàng gold */
+        border: none;
+        transition: 0.3s;
+    }
+
+        .btn-success:hover {
+            background-color: #e67e22; /* Vàng sáng hơn khi hover */
+        }
+
+    .btn:disabled {
+        background-color: #7f8c8d; /* Màu xám khi bị vô hiệu hóa */
+    }
+
+    .bi-bag-check-fill {
+        font-size: 1.5rem;
+    }
+
+    .text-danger {
+        font-size: 0.875rem;
+    }
+</style>
+
+<h2 class="text-center my-4 text-white">🛍 Thanh Toán Đơn Hàng</h2>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-lg p-4 border-0 rounded-3">
+            <div class="card-body">
+                <form asp-action="Checkout" method="post" id="checkoutForm">
+                    <div class="mb-3">
+                        <label asp-for="ShippingAddress" class="form-label fw-bold">📍 Địa chỉ nhận hàng</label>
+                        <input asp-for="ShippingAddress" class="form-control" placeholder="Nhập địa chỉ..." required />
+                        <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Notes" class="form-label fw-bold">📝 Ghi chú</label>
+                        <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Ghi chú cho đơn hàng..."></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-success btn-lg w-100" id="placeOrderBtn">
+                            <i class="bi bi-bag-check-fill me-1"></i> Đặt hàng
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("checkoutForm").addEventListener("submit", function () {
+            let btn = document.getElementById("placeOrderBtn");
+            btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Đang xử lý...';
+            btn.disabled = true;
+        });
+    </script>
+}

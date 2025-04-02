@@ -1,0 +1,145 @@
+﻿@model bai4.Models.Product
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    ViewData["Title"] = "Add Product";
+}
+<h2 class="mb-4 text-center text-light">➕ Add New Product</h2>
+
+<div class="card shadow-lg p-5" style="background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); border-radius: 15px;">
+    <form asp-action="Add" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label fw-bold text-light">Product Name</label>
+            <input asp-for="Name" class="form-control" placeholder="Enter product name..." />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label fw-bold text-light">Price ($)</label>
+            <input asp-for="Price" type="number" class="form-control" placeholder="Enter price..." />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label fw-bold text-light">Description</label>
+            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter product description..."></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CategoryId" class="form-label fw-bold text-light">Category</label>
+            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+                <option value="">-- Select Category --</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ImageUrl" class="form-label fw-bold text-light">Product Image</label>
+            <input type="file" asp-for="ImageUrl" class="form-control" accept="image/*" onchange="previewImage(event)" />
+            <div class="mt-2">
+                <img id="imagePreview" src="#" alt="Image Preview" class="img-thumbnail" style="max-width: 200px; display: none;" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 shadow-lg hover-zoom">
+            ✅ Add Product
+        </button>
+    </form>
+</div>
+
+<!-- JavaScript: Hiển thị ảnh preview -->
+<script>
+    function previewImage(event) {
+        const preview = document.getElementById('imagePreview');
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #2c3e50, #34495e); /* Gradient tối sang trọng */
+        font-family: 'Poppins', sans-serif;
+        color: #ecf0f1;
+        margin: 0;
+        padding: 0;
+    }
+
+    h2 {
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #ecf0f1;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .card {
+        background: rgba(0, 0, 0, 0.6); /* Nền card tối */
+        backdrop-filter: blur(10px); /* Mờ nền */
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+        .card:hover {
+            transform: scale(1.05); /* Phóng to khi hover */
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        }
+
+    .card-img-top {
+        height: 250px;
+        object-fit: cover;
+        filter: brightness(0.8); /* Tối hình ảnh */
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #28a745, #218838); /* Gradient màu xanh */
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 1.1em;
+        transition: 0.3s ease;
+    }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #218838, #28a745); /* Đảo ngược gradient khi hover */
+            transform: scale(1.05);
+        }
+
+    .form-control {
+        border-radius: 10px; /* Góc bo tròn */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-label {
+        font-size: 1.1em;
+        color: #ecf0f1;
+    }
+
+    .text-danger {
+        font-size: 0.9em;
+        font-weight: bold;
+    }
+
+    .hover-zoom {
+        transition: transform 0.3s ease;
+    }
+
+        .hover-zoom:hover {
+            transform: scale(1.05); /* Phóng to khi hover */
+        }
+
+    .img-thumbnail {
+        border-radius: 8px;
+        max-width: 100%;
+        max-height: 150px;
+        object-fit: cover;
+    }
+</style>

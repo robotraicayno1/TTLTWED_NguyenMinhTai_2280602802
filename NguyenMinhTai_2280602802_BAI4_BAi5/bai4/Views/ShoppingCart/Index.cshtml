@@ -1,0 +1,132 @@
+﻿@model bai4.Models.ShoppingCart
+
+@{
+    ViewData["Title"] = "Giỏ Hàng";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        color: white;
+    }
+
+    .table {
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+    }
+
+    .table-dark {
+        background-color: #f39c12;
+        color: black;
+    }
+
+    .btn-outline-primary, .btn-success {
+        background-color: #f39c12;
+        border: none;
+        color: black;
+    }
+
+        .btn-outline-primary:hover, .btn-success:hover {
+            background-color: #e67e22;
+        }
+
+    .btn-danger {
+        background-color: #c0392b;
+    }
+
+    .product-row:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        transition: 0.3s;
+    }
+</style>
+
+<div class="container py-4">
+    <h2 class="mb-4 text-center">🛒 Giỏ Hàng Của Bạn</h2>
+
+    @if (Model.Items.Count > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-hover text-center align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr class="product-row">
+                            <td class="fw-bold">@item.Name</td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <a asp-action="DecreaseQuantity" asp-route-productId="@item.ProductId" class="btn btn-outline-light">-</a>
+                                    <input type="number" min="1" value="@item.Quantity" class="form-control text-center quantity-input" data-product-id="@item.ProductId" style="width: 60px;">
+                                    <a asp-action="IncreaseQuantity" asp-route-productId="@item.ProductId" class="btn btn-outline-light">+</a>
+                                </div>
+                            </td>
+                            <td>@item.Price.ToString("N0") VND</td>
+                            <td class="fw-bold">@((item.Price * item.Quantity).ToString("N0")) VND</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm delete-btn" data-product-id="@item.ProductId">
+                                    <i class="bi bi-trash"></i> Xóa
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-arrow-left"></i> Tiếp tục mua sắm
+            </a>
+            <a asp-action="Checkout" class="btn btn-success btn-lg px-4">
+                <i class="bi bi-credit-card"></i> Tới trang thanh toán
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center p-4">
+            <h4>🛒 Giỏ hàng trống!</h4>
+            <p>Hãy tiếp tục mua sắm và thêm sản phẩm vào giỏ hàng.</p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg">
+                <i class="bi bi-cart-plus"></i> Tiếp tục mua sắm
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".quantity-input").forEach(input => {
+                input.addEventListener("change", function () {
+                    let productId = this.getAttribute("data-product-id");
+                    let newQuantity = this.value;
+                    if (newQuantity < 1) newQuantity = 1;
+                    window.location.href = `/ShoppingCart/UpdateQuantity?productId=${productId}&quantity=${newQuantity}`;
+                });
+            });
+
+            document.querySelectorAll(".delete-btn").forEach(button => {
+                button.addEventListener("click", function () {
+                    let productId = this.getAttribute("data-product-id");
+                    if (confirm("Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?")) {
+                        fetch(`/ShoppingCart/RemoveFromCart?productId=${productId}`)
+                            .then(response => {
+                                if (response.ok) {
+                                    setTimeout(() => location.reload(), 1000);
+                                }
+                            });
+                    }
+                });
+            });
+        });
+    </script>
+}
